@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="taquin">
-      <piece :key="index" v-for="(piece, index) in pieces" :id="index" :number="piece.number" :position="piece.position" :allPositions="allPositions" @moved="onPieceMoved"></piece>
+      <piece :key="index" v-for="(piece, index) in pieces" :id="index" :number="piece.number" :position="piece.position" :allPositions="allPositions" :freePosition="freePosition" @moved="onPieceMoved"></piece>
     </div>
     <div class="debug">
         <pre>
-          {{pieces}}
+          free position: {{freePosition}}
         </pre>
     </div>
   </div>
@@ -17,8 +17,10 @@ export default {
   name: 'Taquin',
   components: {piece},
   methods: {
-    onPieceMoved: function (pos) {
-      console.log('moved', pos)
+    onPieceMoved: function (piece, newFreePosition) {
+      this.freePosition = newFreePosition
+      // ToDo: check if game done
+      // console.log('moved', piece, newFreePosition)
     }
   },
   data () {
@@ -33,7 +35,8 @@ export default {
         {index: 6, number: 7, position: '20'},
         {index: 7, number: 8, position: '21'}
       ],
-      allPositions: ['00', '01', '02', '10', '11', '12', '20', '21', '22']
+      allPositions: ['00', '01', '02', '10', '11', '12', '20', '21', '22'],
+      freePosition: '22'
     }
   }
 }
