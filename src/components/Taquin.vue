@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="taquin">
-      <piece :key="index" v-for="(piece, index) in pieces" :id="index" :number="piece.number" :position="piece.position" :allPositions="allPositions" :freePosition="freePosition" @moved="onPieceMoved"></piece>
+      <piece :key="index" v-for="(piece, index) in shuffle(pieces)" :id="index" :number="piece.number" :position="piece.position" :allPositions="allPositions" :freePosition="freePosition" @moved="onPieceMoved"></piece>
     </div>
     <div class="debug">
         <pre>
@@ -17,8 +17,19 @@ export default {
   name: 'Taquin',
   components: {piece},
   methods: {
+    shuffle: function (a) {
+      let j, x, i
+      for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1))
+        x = a[i]
+        a[i] = a[j]
+        a[j] = x
+      }
+      return a
+    },
     onPieceMoved: function (piece, newFreePosition) {
       this.freePosition = newFreePosition
+      console.log(this.shuffle([1, 2, 3, 4]))
       // ToDo: check if game done
       // console.log('moved', piece, newFreePosition)
     }
