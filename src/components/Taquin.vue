@@ -1,13 +1,15 @@
 <template>
-  <div>
+  <div style="position:relative;">
+    <div class="moves">Moves: {{moves}}</div>
     <div class="taquin">
-      <piece :key="index" v-for="(piece, index) in shuffle(pieces)" :id="index" :number="piece.number" :position="piece.position" :allPositions="allPositions" :freePosition="freePosition" @moved="onPieceMoved"></piece>
+      <piece :key="index" v-for="(piece, index) in shuffledPieces" :id="index" :number="piece.number" :position="allPositions[index]" :allPositions="allPositions" :freePosition="freePosition" @moved="onPieceMoved"></piece>
     </div>
-    <div class="debug">
+    <div class="win">You Win!!!</div>
+    <!-- <div class="debug">
         <pre>
-          free position: {{freePosition}}
+          shuffled: {{shuffledPieces}}
         </pre>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -19,35 +21,71 @@ export default {
   methods: {
     shuffle: function (a) {
       let j, x, i
-      for (i = a.length - 1; i > 0; i--) {
+      let b = a
+      for (i = b.length - 1; i > 0; i--) {
         j = Math.floor(Math.random() * (i + 1))
-        x = a[i]
-        a[i] = a[j]
-        a[j] = x
+        x = b[i]
+        b[i] = b[j]
+        b[j] = x
       }
-      return a
+      return b
+    },
+    gameIsDone: function (arr1, arr2) {
+      if (arr1.length !== arr2.length) return false
+      for (let i = arr1.length; i--;) {
+        if (JSON.stringify(arr1[i]) !== JSON.stringify(arr2[i])) return false
+      }
+      return true
     },
     onPieceMoved: function (piece, newFreePosition) {
+      this.moves++
       this.freePosition = newFreePosition
-      console.log(this.shuffle([1, 2, 3, 4]))
-      // ToDo: check if game done
-      // console.log('moved', piece, newFreePosition)
+      this.shuffledPieces.map((item, i) => {
+        if (item.number === piece.number) {
+          item.position = piece.myPosition
+        }
+        return item
+      })
+      // check if game done
+      if (newFreePosition === '22') {
+        let currentGamePieces = this.shuffledPieces.slice(0)
+        currentGamePieces = currentGamePieces.sort((a, b) => { return a.number > b.number })
+        if (this.gameIsDone(this.winningPieces, currentGamePieces)) {
+          document.querySelector('.win').style.opacity = '1'
+          document.querySelector('.win').style.zIndex = '1'
+        }
+      }
     }
   },
   data () {
     return {
-      pieces: [
-        {index: 0, number: 1, position: '00'},
-        {index: 1, number: 2, position: '01'},
-        {index: 2, number: 3, position: '02'},
-        {index: 3, number: 4, position: '10'},
-        {index: 4, number: 5, position: '11'},
-        {index: 5, number: 6, position: '12'},
-        {index: 6, number: 7, position: '20'},
-        {index: 7, number: 8, position: '21'}
+      winningPieces: [
+        {number: 1, position: '00'},
+        {number: 2, position: '01'},
+        {number: 3, position: '02'},
+        {number: 4, position: '10'},
+        {number: 5, position: '11'},
+        {number: 6, position: '12'},
+        {number: 7, position: '20'},
+        {number: 8, position: '21'}
       ],
       allPositions: ['00', '01', '02', '10', '11', '12', '20', '21', '22'],
-      freePosition: '22'
+      freePosition: '22',
+      shuffledPieces: this.shuffle([
+        {number: 1},
+        {number: 2},
+        {number: 3},
+        {number: 4},
+        {number: 5},
+        {number: 6},
+        {number: 7},
+        {number: 8}
+      ]).map((item, i) => {
+        let allPos = ['00', '01', '02', '10', '11', '12', '20', '21']
+        item.position = allPos[i]
+        return item
+      }),
+      moves: 0
     }
   }
 }
@@ -55,6 +93,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
+.moves {
+  text-align: center;
+}
 .taquin {
   width: 600px;
   height: 600px;
@@ -65,5 +106,21 @@ export default {
   border: 1px solid #000;
   margin: 0 auto;
   padding: 10px;
+}
+.win {
+  position: fixed;
+  font-size: 70px;
+  color: green;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  opacity: 0;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  transition: all 0.25s ease-in-out 0s; 
+  z-index: -1;
 }
 </style>

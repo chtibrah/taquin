@@ -1,10 +1,10 @@
 <template>
     <div class="piece" @click="movePiece" ref="thisPiece">
       <span>{{nbr}}</span>
-      <pre>
+      <!-- <pre>
         number: {{nbr}}
         mypPosition: {{myPosition}}
-      </pre>
+      </pre> -->
     </div>
 </template>
 
