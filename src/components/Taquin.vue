@@ -1,10 +1,16 @@
 <template>
   <div style="position:relative;">
+    <nav class="game-config">
+      <label for="gitter-3">3x3</label><input type="radio" id="gitter-3" value="3" v-model="grid" checked="true">
+      <label for="gitter-4">4x4</label><input type="radio" id="gitter-4" value="4" v-model="grid">
+    </nav>
     <div class="moves">Moves: {{moves}}</div>
-    <div class="taquin">
+    <div class="taquin" :style="{
+      gridTemplateColumns: 'repeat(' + grid + ', 1fr)',
+      gridTemplateRows: 'repeat(' + grid + ', 1fr)'}">
+      <div class="win">You Win!!!</div>
       <piece :key="index" v-for="(piece, index) in shuffledPieces" :id="index" :number="piece.number" :position="allPositions[index]" :allPositions="allPositions" :freePosition="freePosition" @moved="onPieceMoved"></piece>
     </div>
-    <div class="win">You Win!!!</div>
     <!-- <div class="debug">
         <pre>
           shuffled: {{shuffledPieces}}
@@ -50,7 +56,7 @@ export default {
       if (newFreePosition === '22') {
         let currentGamePieces = this.shuffledPieces.slice(0)
         currentGamePieces = currentGamePieces.sort((a, b) => { return a.number > b.number })
-        if (this.gameIsDone(this.winningPieces, currentGamePieces)) {
+        if (this.gameIsDone(this.winningPieces3x3, currentGamePieces)) {
           document.querySelector('.win').style.opacity = '1'
           document.querySelector('.win').style.zIndex = '1'
         }
@@ -59,7 +65,7 @@ export default {
   },
   data () {
     return {
-      winningPieces: [
+      winningPieces3x3: [
         {number: 1, position: '00'},
         {number: 2, position: '01'},
         {number: 3, position: '02'},
@@ -85,7 +91,8 @@ export default {
         item.position = allPos[i]
         return item
       }),
-      moves: 0
+      moves: 0,
+      grid: '3'
     }
   }
 }
@@ -100,15 +107,14 @@ export default {
   width: 600px;
   height: 600px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
   grid-gap: 10px;
   border: 1px solid #000;
   margin: 0 auto;
   padding: 10px;
+  position: relative;
 }
 .win {
-  position: fixed;
+  position: absolute;
   font-size: 70px;
   color: green;
   left: 0;

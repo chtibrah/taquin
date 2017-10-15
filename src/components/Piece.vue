@@ -50,6 +50,7 @@ export default {
 .piece {
   --moveX: 0;
   --moveY: 0;
+  background-color: orange;
   border: 1px solid grey;
   display: flex;
   justify-content: center;
