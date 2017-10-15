@@ -75,6 +75,16 @@ export default {
         {number: 7, position: '20'},
         {number: 8, position: '21'}
       ],
+      winningPieces4x4: [
+        {number: 1, position: '00'},
+        {number: 2, position: '01'},
+        {number: 3, position: '02'},
+        {number: 4, position: '10'},
+        {number: 5, position: '11'},
+        {number: 6, position: '12'},
+        {number: 7, position: '20'},
+        {number: 8, position: '21'}
+      ],
       allPositions: ['00', '01', '02', '10', '11', '12', '20', '21', '22'],
       freePosition: '22',
       shuffledPieces: this.shuffle([
