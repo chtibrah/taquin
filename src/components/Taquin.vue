@@ -114,10 +114,10 @@ export default {
   text-align: center;
 }
 .taquin {
-  width: 600px;
-  height: 600px;
+  width: 609px;
+  height: 609px;
   display: grid;
-  grid-gap: 10px;
+  grid-gap: 1px;
   border: 1px solid #000;
   margin: 0 auto;
   padding: 10px;

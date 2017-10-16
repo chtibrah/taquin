@@ -30,8 +30,8 @@ export default {
         let moveY = +([...this.freePosition][0]) - +([...currentPosition][0])
         let currentPosX = parseInt(window.getComputedStyle(this.$refs.thisPiece).getPropertyValue('--moveX'), 10)
         let currentPosY = parseInt(window.getComputedStyle(this.$refs.thisPiece).getPropertyValue('--moveY'), 10)
-        this.$refs.thisPiece.style.setProperty('--moveX', currentPosX + (moveX * 203) + 'px')
-        this.$refs.thisPiece.style.setProperty('--moveY', currentPosY + (moveY * 203) + 'px')
+        this.$refs.thisPiece.style.setProperty('--moveX', currentPosX + (moveX * 196) + 'px')
+        this.$refs.thisPiece.style.setProperty('--moveY', currentPosY + (moveY * 196) + 'px')
         this.myPosition = this.freePosition
         this.$emit('moved', this, currentPosition)
       }
