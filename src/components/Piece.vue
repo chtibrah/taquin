@@ -11,7 +11,7 @@
 <script>
 export default {
   name: 'piece',
-  props: ['id', 'background', 'number', 'position', 'allPositions', 'freePosition', 'myWidth', 'myHeight', 'factor'],
+  props: ['background', 'number', 'position', 'allPositions', 'freePosition', 'myWidth', 'myHeight', 'factor'],
   methods: {
     getPossiblePositions: function () {
       let positionArray = [...this.myPosition]
@@ -37,8 +37,8 @@ export default {
       }
     },
     setBackgroundPostions: function () {
-      this.myPosX = (-this.widthOfOnePiece * (this.id % this.gridFactor)) + 'px'
-      this.myPosY = -(Math.floor(this.id / this.gridFactor) * this.heightOfOnePiece) + 'px'
+      this.myPosX = (-this.widthOfOnePiece * ((this.number - 1) % this.gridFactor)) + 'px'
+      this.myPosY = -(Math.floor((this.number - 1) / this.gridFactor) * this.heightOfOnePiece) + 'px'
     }
   },
   data () {
@@ -69,14 +69,11 @@ export default {
     myHeight: function () {
       this.heightOfOnePiece = this.myHeight
       this.myPosY = -(Math.floor((this.number - 1) / this.gridFactor) * this.myHeight) + 'px'
+    },
+    number: function () {
+      this.myPosX = (-this.widthOfOnePiece * ((this.number - 1) % this.gridFactor)) + 'px'
+      this.myPosY = -(Math.floor((this.number - 1) / this.gridFactor) * this.heightOfOnePiece) + 'px'
     }
-    // ,
-    // factor: function () {
-    //   this.gridFactor = this.factor
-    //   this.myPosX = (-this.myWidth * ((this.number - 1) % this.gridFactor)) + 'px'
-    //   this.myPosY = -(Math.floor((this.number - 1) / this.gridFactor) * this.myHeight) + 'px'
-    //   console.log(this.myPosX, this.myPosY)
-    // }
   }
 
 }
