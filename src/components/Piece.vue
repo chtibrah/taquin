@@ -58,6 +58,17 @@ export default {
   watch: {
     position: function () {
       this.myPosition = this.position
+    },
+    factor: function () {
+      this.gridFactor = this.factor
+    },
+    myWidth: function () {
+      this.widthOfOnePiece = this.myWidth
+      this.myPosX = (-this.myWidth * ((this.number - 1) % this.gridFactor)) + 'px'
+    },
+    myHeight: function () {
+      this.heightOfOnePiece = this.myHeight
+      this.myPosY = -(Math.floor((this.number - 1) / this.gridFactor) * this.myHeight) + 'px'
     }
     // ,
     // factor: function () {
