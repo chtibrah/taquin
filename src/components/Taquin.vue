@@ -2,17 +2,18 @@
   <div style="position:relative;display: grid; grid-template-columns: 1fr 2fr;">
     <config @bgchanged="changePieceBackground" @gridchanged="gridChanged"></config>
     <div class="game-area">
+      <div class="win">You Win!!!</div>
       <button @click="startGame">Start new Game</button>
       <div class="moves">Moves: {{moves}}</div>
       <div class="taquin" :style="{
         gridTemplateColumns: 'repeat(' + grid + ', 1fr)',
         gridTemplateRows: 'repeat(' + grid + ', 1fr)',
         gridGap: gridGap}">
-        <div class="win">You Win!!!</div>
         <piece :myWidth="pieceWidth" :myHeight="pieceHeight" :factor="grid" :key="index" v-for="(piece, index) in shuffledPieces" :id="index" :number="piece.number" :position="allPositions[index]" :allPositions="allPositions" :freePosition="freePosition" @moved="onPieceMoved" :background="bgStyle"></piece>
       </div>
     </div>
-    free position : <pre>{{freePosition}}</pre>
+    <!-- <pre>free position : {{freePosition}}</pre>
+    <pre>shuffled : {{shuffledPieces}}</pre> -->
   </div>
 </template>
 
@@ -36,9 +37,12 @@ export default {
       return b
     },
     gameIsDone: function (arr1, arr2) {
-      if (arr1.length !== arr2.length) return false
+      console.log(arr1, arr2)
+      let arr3 = arr2.slice(0)
+      arr3.sort((a, b) => { return a.number > b.number ? 1 : (a.number < b.number ? -1 : 0) })
+      if (arr1.length !== arr3.length) return false
       for (let i = arr1.length; i--;) {
-        if (JSON.stringify(arr1[i]) !== JSON.stringify(arr2[i])) return false
+        if (JSON.stringify(arr1[i]) !== JSON.stringify(arr3[i])) return false
       }
       this.gridGap = '0px'
       return true
@@ -76,11 +80,11 @@ export default {
     },
     gridChanged: function (newGrid) {
       this.grid = newGrid
-      this.pieceWidth = parseInt(578 / this.grid)
-      this.pieceHeight = parseInt(578 / this.grid)
-      this.allPositions = this.grid === 3 ? this.allPositions3x3 : this.allPositions4x4
-      this.freePosition = this.grid === 3 ? this.freePosition3x3 : this.freePosition4x4
-      this.shuffledPieces = this.grid === 3 ? this.winningPieces3x3 : this.winningPieces4x4
+      this.pieceWidth = parseInt(578 / newGrid)
+      this.pieceHeight = parseInt(578 / newGrid)
+      this.allPositions = newGrid === 3 ? this.allPositions3x3 : this.allPositions4x4
+      this.freePosition = newGrid === 3 ? this.freePosition3x3 : this.freePosition4x4
+      this.shuffledPieces = newGrid === 3 ? this.winningPieces3x3 : this.winningPieces4x4
     },
     startGame: function () {
       if (this.grid === 3) {
@@ -121,7 +125,6 @@ export default {
           return item
         })
       }
-      this.gridGap = '1px'
       this.moves = 0
     }
   },
