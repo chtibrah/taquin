@@ -1,15 +1,26 @@
 <template>
-  <div style="position:relative;display: grid; grid-template-columns: 1fr 2fr;">
+  <div class="main">
     <config @bgchanged="changePieceBackground" @gridchanged="gridChanged"></config>
     <div class="game-area">
       <div class="win">You Win!!!</div>
-      <button @click="startGame">Start new Game</button>
+      <button class="start-game" @click="startGame">Start Game</button>
       <div class="moves">Moves: {{moves}}</div>
       <div class="taquin" :style="{
         gridTemplateColumns: 'repeat(' + grid + ', 1fr)',
         gridTemplateRows: 'repeat(' + grid + ', 1fr)',
         gridGap: gridGap}">
-        <piece :myWidth="pieceWidth" :myHeight="pieceHeight" :factor="grid" :key="index" v-for="(piece, index) in shuffledPieces" :id="index" :number="piece.number" :position="allPositions[index]" :allPositions="allPositions" :freePosition="freePosition" @moved="onPieceMoved" :background="bgStyle"></piece>
+        <piece :myWidth="pieceWidth" 
+          v-for="(piece, index) in shuffledPieces" 
+          :myHeight="pieceHeight" 
+          :factor="grid" 
+          :key="index" 
+          :number="piece.number" 
+          :position="allPositions[index]" 
+          :allPositions="allPositions" 
+          :freePosition="freePosition" 
+          :background="bgStyle"
+          @moved="onPieceMoved">
+        </piece> 
       </div>
     </div>
     <!-- <pre>free position : {{freePosition}}</pre>
@@ -190,6 +201,26 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
+.main {
+  position: relative;
+  display: grid; 
+  grid-template-columns: 1fr 2fr;
+  align-items: center;
+}
+.start-game {
+  background: none;
+  border: 1px solid #718cd6;
+  padding: 10px 10px;
+  font-weight: bold;
+  background-color: #88b1e4;
+  color: #fff;
+  font-size: 1.25em;
+  cursor: pointer;
+  outline: 0;
+  &:hover {
+    background-color: blue;
+  }
+}
 .moves {
   text-align: center;
 }
