@@ -1,6 +1,6 @@
 <template>
-    <div class="piece" @click="movePiece" ref="thisPiece">
-      <span>{{nbr}}</span>
+    <div class="piece" @click="movePiece" ref="thisPiece" :style="{'background': 'url(' + background + ') no-repeat ' + myPosX + ' ' + myPosY + ' transparent'}">
+      <span v-if="background === 'none'">{{number}}</span>
       <!-- <pre>
         number: {{nbr}}
         mypPosition: {{myPosition}}
@@ -11,7 +11,7 @@
 <script>
 export default {
   name: 'piece',
-  props: ['number', 'position', 'allPositions', 'freePosition'],
+  props: ['id', 'background', 'number', 'position', 'allPositions', 'freePosition', 'myWidth', 'myHeight', 'factor'],
   methods: {
     getPossiblePositions: function () {
       let positionArray = [...this.myPosition]
@@ -30,19 +30,44 @@ export default {
         let moveY = +([...this.freePosition][0]) - +([...currentPosition][0])
         let currentPosX = parseInt(window.getComputedStyle(this.$refs.thisPiece).getPropertyValue('--moveX'), 10)
         let currentPosY = parseInt(window.getComputedStyle(this.$refs.thisPiece).getPropertyValue('--moveY'), 10)
-        this.$refs.thisPiece.style.setProperty('--moveX', currentPosX + (moveX * 196) + 'px')
-        this.$refs.thisPiece.style.setProperty('--moveY', currentPosY + (moveY * 196) + 'px')
+        this.$refs.thisPiece.style.setProperty('--moveX', currentPosX + (moveX * (this.myWidth + 1)) + 'px')
+        this.$refs.thisPiece.style.setProperty('--moveY', currentPosY + (moveY * (this.myHeight + 1)) + 'px')
         this.myPosition = this.freePosition
         this.$emit('moved', this, currentPosition)
       }
+    },
+    setBackgroundPostions: function () {
+      this.myPosX = (-this.widthOfOnePiece * (this.id % this.gridFactor)) + 'px'
+      this.myPosY = -(Math.floor(this.id / this.gridFactor) * this.heightOfOnePiece) + 'px'
     }
   },
   data () {
     return {
-      nbr: this.number,
-      myPosition: this.position
+      myPosition: this.position,
+      gridFactor: this.factor,
+      widthOfOnePiece: this.myWidth,
+      heightOfOnePiece: this.myHeight,
+      myPosX: '0px',
+      myPosY: '0px'
     }
+  },
+  beforeMount: function () {
+    this.myPosX = (-this.widthOfOnePiece * ((this.number - 1) % this.gridFactor)) + 'px'
+    this.myPosY = -(Math.floor((this.number - 1) / this.gridFactor) * this.heightOfOnePiece) + 'px'
+  },
+  watch: {
+    position: function () {
+      this.myPosition = this.position
+    }
+    // ,
+    // factor: function () {
+    //   this.gridFactor = this.factor
+    //   this.myPosX = (-this.myWidth * ((this.number - 1) % this.gridFactor)) + 'px'
+    //   this.myPosY = -(Math.floor((this.number - 1) / this.gridFactor) * this.myHeight) + 'px'
+    //   console.log(this.myPosX, this.myPosY)
+    // }
   }
+
 }
 </script>
 
@@ -51,7 +76,7 @@ export default {
   --moveX: 0;
   --moveY: 0;
   background-color: orange;
-  border: 1px solid grey;
+  border: 1px solid #c7c7c7;
   display: flex;
   justify-content: center;
   align-items: center;

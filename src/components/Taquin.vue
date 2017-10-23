@@ -1,33 +1,32 @@
 <template>
-  <div style="position:relative;">
-    <nav class="game-config">
-      <label for="gitter-3">3x3</label><input type="radio" id="gitter-3" value="3" v-model="grid" checked="true">
-      <label for="gitter-4">4x4</label><input type="radio" id="gitter-4" value="4" v-model="grid">
-    </nav>
-    <div class="moves">Moves: {{moves}}</div>
-    <div class="taquin" :style="{
-      gridTemplateColumns: 'repeat(' + grid + ', 1fr)',
-      gridTemplateRows: 'repeat(' + grid + ', 1fr)'}">
-      <div class="win">You Win!!!</div>
-      <piece :key="index" v-for="(piece, index) in shuffledPieces" :id="index" :number="piece.number" :position="allPositions[index]" :allPositions="allPositions" :freePosition="freePosition" @moved="onPieceMoved"></piece>
+  <div style="position:relative;display: grid; grid-template-columns: 1fr 2fr;">
+    <config @bgchanged="changePieceBackground" @gridchanged="gridChanged"></config>
+    <div class="game-area">
+      <button @click="startGame">Start new Game</button>
+      <div class="moves">Moves: {{moves}}</div>
+      <div class="taquin" :style="{
+        gridTemplateColumns: 'repeat(' + grid + ', 1fr)',
+        gridTemplateRows: 'repeat(' + grid + ', 1fr)',
+        gridGap: gridGap}">
+        <div class="win">You Win!!!</div>
+        <piece :myWidth="pieceWidth" :myHeight="pieceHeight" :factor="grid" :key="index" v-for="(piece, index) in shuffledPieces" :id="index" :number="piece.number" :position="allPositions[index]" :allPositions="allPositions" :freePosition="freePosition" @moved="onPieceMoved" :background="bgStyle"></piece>
+      </div>
     </div>
-    <!-- <div class="debug">
-        <pre>
-          shuffled: {{shuffledPieces}}
-        </pre>
-    </div> -->
+    free position : <pre>{{freePosition}}</pre>
   </div>
 </template>
 
 <script>
 import piece from './Piece'
+import config from './Config'
+
 export default {
   name: 'Taquin',
-  components: {piece},
+  components: {piece, config},
   methods: {
     shuffle: function (a) {
       let j, x, i
-      let b = a
+      let b = a.slice(0)
       for (i = b.length - 1; i > 0; i--) {
         j = Math.floor(Math.random() * (i + 1))
         x = b[i]
@@ -41,6 +40,7 @@ export default {
       for (let i = arr1.length; i--;) {
         if (JSON.stringify(arr1[i]) !== JSON.stringify(arr2[i])) return false
       }
+      this.gridGap = '0px'
       return true
     },
     onPieceMoved: function (piece, newFreePosition) {
@@ -53,7 +53,7 @@ export default {
         return item
       })
       // check if game done
-      if (newFreePosition === '22') {
+      if (this.grid === 3 && newFreePosition === '22') {
         let currentGamePieces = this.shuffledPieces.slice(0)
         currentGamePieces = currentGamePieces.sort((a, b) => { return a.number > b.number })
         if (this.gameIsDone(this.winningPieces3x3, currentGamePieces)) {
@@ -61,6 +61,68 @@ export default {
           document.querySelector('.win').style.zIndex = '1'
         }
       }
+      if (this.grid === 4 && newFreePosition === '33') {
+        let currentGamePieces = this.shuffledPieces.slice(0)
+        currentGamePieces = currentGamePieces.sort((a, b) => { return a.number > b.number })
+        if (this.gameIsDone(this.winningPieces4x4, currentGamePieces)) {
+          document.querySelector('.win').style.opacity = '1'
+          document.querySelector('.win').style.zIndex = '1'
+        }
+      }
+    },
+    changePieceBackground: function (background) {
+      this.shuffledPieces = this.grid === 3 ? this.winningPieces3x3 : this.winningPieces4x4
+      this.bgStyle = background
+    },
+    gridChanged: function (newGrid) {
+      this.grid = newGrid
+      this.pieceWidth = parseInt(578 / this.grid)
+      this.pieceHeight = parseInt(578 / this.grid)
+      this.allPositions = this.grid === 3 ? this.allPositions3x3 : this.allPositions4x4
+      this.freePosition = this.grid === 3 ? this.freePosition3x3 : this.freePosition4x4
+      this.shuffledPieces = this.grid === 3 ? this.winningPieces3x3 : this.winningPieces4x4
+    },
+    startGame: function () {
+      if (this.grid === 3) {
+        this.shuffledPieces = this.shuffle([
+          {number: 1},
+          {number: 2},
+          {number: 3},
+          {number: 4},
+          {number: 5},
+          {number: 6},
+          {number: 7},
+          {number: 8}
+        ]).map((item, i) => {
+          let allPos = ['00', '01', '02', '10', '11', '12', '20', '21']
+          item.position = allPos[i]
+          return item
+        })
+      } else {
+        this.shuffledPieces = this.shuffle([
+          {number: 1},
+          {number: 2},
+          {number: 3},
+          {number: 4},
+          {number: 5},
+          {number: 6},
+          {number: 7},
+          {number: 8},
+          {number: 9},
+          {number: 10},
+          {number: 11},
+          {number: 12},
+          {number: 13},
+          {number: 14},
+          {number: 15}
+        ]).map((item, i) => {
+          let allPos = ['00', '01', '02', '03', '10', '11', '12', '13', '20', '21', '22', '23', '30', '31', '32']
+          item.position = allPos[i]
+          return item
+        })
+      }
+      this.gridGap = '1px'
+      this.moves = 0
     }
   },
   data () {
@@ -79,30 +141,45 @@ export default {
         {number: 1, position: '00'},
         {number: 2, position: '01'},
         {number: 3, position: '02'},
-        {number: 4, position: '10'},
-        {number: 5, position: '11'},
-        {number: 6, position: '12'},
-        {number: 7, position: '20'},
-        {number: 8, position: '21'}
+        {number: 4, position: '03'},
+        {number: 5, position: '10'},
+        {number: 6, position: '11'},
+        {number: 7, position: '12'},
+        {number: 8, position: '13'},
+        {number: 9, position: '20'},
+        {number: 10, position: '21'},
+        {number: 11, position: '22'},
+        {number: 12, position: '23'},
+        {number: 13, position: '30'},
+        {number: 14, position: '31'},
+        {number: 15, position: '32'}
       ],
-      allPositions: ['00', '01', '02', '10', '11', '12', '20', '21', '22'],
-      freePosition: '22',
-      shuffledPieces: this.shuffle([
-        {number: 1},
-        {number: 2},
-        {number: 3},
-        {number: 4},
-        {number: 5},
-        {number: 6},
-        {number: 7},
-        {number: 8}
-      ]).map((item, i) => {
-        let allPos = ['00', '01', '02', '10', '11', '12', '20', '21']
-        item.position = allPos[i]
-        return item
-      }),
+      allPositions3x3: ['00', '01', '02', '10', '11', '12', '20', '21', '22'],
+      allPositions4x4: ['00', '01', '02', '03', '10', '11', '12', '13', '20', '21', '22', '23', '30', '31', '32', '33'],
+      freePosition3x3: '22',
+      freePosition4x4: '33',
+      freePosition: '',
+      shuffledPieces: [],
+      allPositions: [],
       moves: 0,
-      grid: '3'
+      grid: 3,
+      gridGap: '1px',
+      bgStyle: 'none',
+      pieceWidth: 0,
+      pieceHeight: 0,
+      myArr: []
+    }
+  },
+  mounted: function () {
+    this.pieceWidth = parseInt(578 / this.grid)
+    this.pieceHeight = parseInt(578 / this.grid)
+    this.allPositions = this.grid === 3 ? this.allPositions3x3 : this.allPositions4x4
+    this.shuffledPieces = this.grid === 3 ? this.winningPieces3x3 : this.winningPieces4x4
+    this.freePosition = this.grid === 3 ? this.freePosition3x3 : this.freePosition4x4
+    for (let i = 0; i < (this.grid * this.grid) - 1; i++) {
+      let x = Math.floor(i / this.grid)
+      let y = i % this.grid
+      this.myArr.push(x + '' + y)
     }
   }
 }
@@ -114,10 +191,9 @@ export default {
   text-align: center;
 }
 .taquin {
-  width: 609px;
-  height: 609px;
+  width: 600px;
+  height: 600px;
   display: grid;
-  grid-gap: 1px;
   border: 1px solid #000;
   margin: 0 auto;
   padding: 10px;
