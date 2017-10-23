@@ -61,6 +61,8 @@ export default {
     },
     factor: function () {
       this.gridFactor = this.factor
+      this.myPosX = (-this.widthOfOnePiece * ((this.number - 1) % this.gridFactor)) + 'px'
+      this.myPosY = -(Math.floor((this.number - 1) / this.gridFactor) * this.heightOfOnePiece) + 'px'
     },
     myWidth: function () {
       this.widthOfOnePiece = this.myWidth
