@@ -1,10 +1,9 @@
 <template>
-    <div class="piece" @click="movePiece" ref="thisPiece" :style="{'background': 'url(' + background + ') no-repeat ' + myPosX + ' ' + myPosY + ' transparent'}">
+    <div class="piece" 
+        ref="thisPiece" 
+        :style="{'background': 'url(' + background + ') no-repeat ' + myPosX + ' ' + myPosY + ' rgba(0,0,0,0.4)'}"
+        @click="movePiece">
       <span v-if="background === 'none'">{{number}}</span>
-      <!-- <pre>
-        number: {{nbr}}
-        mypPosition: {{myPosition}}
-      </pre> -->
     </div>
 </template>
 
@@ -37,23 +36,25 @@ export default {
       }
     },
     setBackgroundPostions: function () {
-      this.myPosX = (-this.widthOfOnePiece * ((this.number - 1) % this.gridFactor)) + 'px'
-      this.myPosY = -(Math.floor((this.number - 1) / this.gridFactor) * this.heightOfOnePiece) + 'px'
+      this.myPosX = (-this.myWidth * ((this.number - 1) % this.gridFactor)) + 'px'
+      this.myPosY = -(Math.floor((this.number - 1) / this.gridFactor) * this.myHeight) + 'px'
     }
   },
   data () {
     return {
       myPosition: this.position,
       gridFactor: this.factor,
-      widthOfOnePiece: this.myWidth,
-      heightOfOnePiece: this.myHeight,
       myPosX: '0px',
-      myPosY: '0px'
+      myPosY: '0px',
+      baseStyles: {
+        '--moveX': '0px',
+        '--moveY': '0px'
+      }
     }
   },
   beforeMount: function () {
-    this.myPosX = (-this.widthOfOnePiece * ((this.number - 1) % this.gridFactor)) + 'px'
-    this.myPosY = -(Math.floor((this.number - 1) / this.gridFactor) * this.heightOfOnePiece) + 'px'
+    this.myPosX = (-this.myWidth * ((this.number - 1) % this.factor)) + 'px'
+    this.myPosY = -(Math.floor((this.number - 1) / this.factor) * this.myHeight) + 'px'
   },
   watch: {
     position: function () {
@@ -61,20 +62,22 @@ export default {
     },
     factor: function () {
       this.gridFactor = this.factor
-      this.myPosX = (-this.widthOfOnePiece * ((this.number - 1) % this.gridFactor)) + 'px'
-      this.myPosY = -(Math.floor((this.number - 1) / this.gridFactor) * this.heightOfOnePiece) + 'px'
+      this.myPosX = (-this.myWidth * ((this.number - 1) % this.gridFactor)) + 'px'
+      this.myPosY = -(Math.floor((this.number - 1) / this.factor) * this.myHeight) + 'px'
+      // css translate reset
+      this.$el.style.setProperty('--moveX', '0px')
+      this.$el.style.setProperty('--moveY', '0px')
+      this.myPosition = this.position
     },
     myWidth: function () {
-      this.widthOfOnePiece = this.myWidth
-      this.myPosX = (-this.myWidth * ((this.number - 1) % this.gridFactor)) + 'px'
+      this.myPosX = (-this.myWidth * ((this.number - 1) % this.factor)) + 'px'
     },
     myHeight: function () {
-      this.heightOfOnePiece = this.myHeight
-      this.myPosY = -(Math.floor((this.number - 1) / this.gridFactor) * this.myHeight) + 'px'
+      this.myPosY = -(Math.floor((this.number - 1) / this.factor) * this.myHeight) + 'px'
     },
     number: function () {
-      this.myPosX = (-this.widthOfOnePiece * ((this.number - 1) % this.gridFactor)) + 'px'
-      this.myPosY = -(Math.floor((this.number - 1) / this.gridFactor) * this.heightOfOnePiece) + 'px'
+      this.myPosX = (-this.myWidth * ((this.number - 1) % this.factor)) + 'px'
+      this.myPosY = -(Math.floor((this.number - 1) / this.factor) * this.myHeight) + 'px'
     }
   }
 

@@ -23,8 +23,6 @@
         </piece> 
       </div>
     </div>
-    <!-- <pre>free position : {{freePosition}}</pre>
-    <pre>shuffled : {{shuffledPieces}}</pre> -->
   </div>
 </template>
 
@@ -180,8 +178,7 @@ export default {
       gridGap: '1px',
       bgStyle: 'none',
       pieceWidth: 0,
-      pieceHeight: 0,
-      myArr: []
+      pieceHeight: 0
     }
   },
   mounted: function () {
@@ -190,11 +187,6 @@ export default {
     this.allPositions = this.grid === 3 ? this.allPositions3x3 : this.allPositions4x4
     this.shuffledPieces = this.grid === 3 ? this.winningPieces3x3 : this.winningPieces4x4
     this.freePosition = this.grid === 3 ? this.freePosition3x3 : this.freePosition4x4
-    for (let i = 0; i < (this.grid * this.grid) - 1; i++) {
-      let x = Math.floor(i / this.grid)
-      let y = i % this.grid
-      this.myArr.push(x + '' + y)
-    }
   }
 }
 </script>
