@@ -44,11 +44,13 @@ export default {
       picture: 'none',
       pictureConfig: [
         {index: 'pic0', url: 'none'},
-        {index: 'pic1', url: '/static/pic1.jpg'},
+        {index: 'pic1', url: '/static/pic1.png'},
         {index: 'pic2', url: '/static/pic2.jpg'},
         {index: 'pic3', url: '/static/pic3.jpg'},
         {index: 'pic4', url: '/static/pic4.jpg'},
-        {index: 'pic5', url: '/static/pic5.jpg'}
+        {index: 'pic5', url: '/static/pic5.jpg'},
+        {index: 'pic6', url: '/static/pic6.jpg'},
+        {index: 'pic7', url: '/static/pic7.jpg'}
       ]
     }
   }

@@ -1,7 +1,7 @@
 <template>
     <div class="piece" 
         ref="thisPiece" 
-        :style="background !== 'none' ? {'background': 'url(' + background + ') no-repeat ' + myPosX + ' ' + myPosY + ' rgba(0,0,0,0.4)'} : {'background': 'rgba(0, 0, 0, 0.4)'}"
+        :style="background !== 'none' ? {'background': 'url(' + background + ') no-repeat ' + myPosX + ' ' + myPosY + ' transparent'} : {'background': 'rgba(0, 0, 0, 0.4)'}"
         @click="movePiece">
       <span v-if="background === 'none'">{{number}}</span>
     </div>
