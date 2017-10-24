@@ -84,6 +84,8 @@ export default {
       }
     },
     changePieceBackground: function (background) {
+      this.allPositions = this.grid === 3 ? this.allPositions3x3 : this.allPositions4x4
+      this.freePosition = this.grid === 3 ? this.freePosition3x3 : this.freePosition4x4
       this.shuffledPieces = this.grid === 3 ? this.winningPieces3x3 : this.winningPieces4x4
       this.bgStyle = background
     },

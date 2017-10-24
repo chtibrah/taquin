@@ -69,6 +69,15 @@ export default {
       this.$el.style.setProperty('--moveY', '0px')
       this.myPosition = this.position
     },
+    background: function () {
+      this.gridFactor = this.factor
+      this.myPosX = (-this.myWidth * ((this.number - 1) % this.gridFactor)) + 'px'
+      this.myPosY = -(Math.floor((this.number - 1) / this.factor) * this.myHeight) + 'px'
+      // css translate reset
+      this.$el.style.setProperty('--moveX', '0px')
+      this.$el.style.setProperty('--moveY', '0px')
+      this.myPosition = this.position
+    },
     myWidth: function () {
       this.myPosX = (-this.myWidth * ((this.number - 1) % this.factor)) + 'px'
     },
