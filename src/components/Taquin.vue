@@ -243,6 +243,7 @@ export default {
     bottom: 0;
     background-color: rgba(0,0,0,0.3);
     z-index: 1;
+    cursor: not-allowed;
   }
 }
 .win {
