@@ -10,7 +10,7 @@
 <script>
 export default {
   name: 'piece',
-  props: ['background', 'number', 'position', 'allPositions', 'freePosition', 'myWidth', 'myHeight', 'factor'],
+  props: ['background', 'number', 'position', 'allPositions', 'freePosition', 'myWidth', 'myHeight', 'factor', 'gameStarts'],
   methods: {
     getPossiblePositions: function () {
       let positionArray = [...this.myPosition]
@@ -22,17 +22,19 @@ export default {
       return possiblePositions.filter((item) => { return this.allPositions.indexOf(item) !== -1 })
     },
     movePiece: function () {
-      let possiblePositions = this.getPossiblePositions()
-      let currentPosition = this.myPosition
-      if (possiblePositions.indexOf(this.freePosition) !== -1) {
-        let moveX = +([...this.freePosition][1]) - +([...currentPosition][1])
-        let moveY = +([...this.freePosition][0]) - +([...currentPosition][0])
-        let currentPosX = parseInt(window.getComputedStyle(this.$refs.thisPiece).getPropertyValue('--moveX'), 10)
-        let currentPosY = parseInt(window.getComputedStyle(this.$refs.thisPiece).getPropertyValue('--moveY'), 10)
-        this.$refs.thisPiece.style.setProperty('--moveX', currentPosX + (moveX * (this.myWidth + 1)) + 'px')
-        this.$refs.thisPiece.style.setProperty('--moveY', currentPosY + (moveY * (this.myHeight + 1)) + 'px')
-        this.myPosition = this.freePosition
-        this.$emit('moved', this, currentPosition)
+      if (this.gameStarts) {
+        let possiblePositions = this.getPossiblePositions()
+        let currentPosition = this.myPosition
+        if (possiblePositions.indexOf(this.freePosition) !== -1) {
+          let moveX = +([...this.freePosition][1]) - +([...currentPosition][1])
+          let moveY = +([...this.freePosition][0]) - +([...currentPosition][0])
+          let currentPosX = parseInt(window.getComputedStyle(this.$refs.thisPiece).getPropertyValue('--moveX'), 10)
+          let currentPosY = parseInt(window.getComputedStyle(this.$refs.thisPiece).getPropertyValue('--moveY'), 10)
+          this.$refs.thisPiece.style.setProperty('--moveX', currentPosX + (moveX * (this.myWidth + 1)) + 'px')
+          this.$refs.thisPiece.style.setProperty('--moveY', currentPosY + (moveY * (this.myHeight + 1)) + 'px')
+          this.myPosition = this.freePosition
+          this.$emit('moved', this, currentPosition)
+        }
       }
     },
     setBackgroundPostions: function () {

@@ -19,6 +19,7 @@
           :allPositions="allPositions" 
           :freePosition="freePosition" 
           :background="bgStyle"
+          :gameStarts="gameStarts"
           @moved="onPieceMoved">
         </piece> 
       </div>
@@ -88,6 +89,7 @@ export default {
       this.freePosition = this.grid === 3 ? this.freePosition3x3 : this.freePosition4x4
       this.shuffledPieces = this.grid === 3 ? this.winningPieces3x3 : this.winningPieces4x4
       this.bgStyle = background
+      this.gameStarts = false
     },
     gridChanged: function (newGrid) {
       this.grid = newGrid
@@ -96,6 +98,10 @@ export default {
       this.allPositions = newGrid === 3 ? this.allPositions3x3 : this.allPositions4x4
       this.freePosition = newGrid === 3 ? this.freePosition3x3 : this.freePosition4x4
       this.shuffledPieces = newGrid === 3 ? this.winningPieces3x3 : this.winningPieces4x4
+      this.gameStarts = false
+    },
+    gameReset: function () {
+      this.gameStarts = false
     },
     startGame: function () {
       if (this.grid === 3) {
@@ -137,6 +143,7 @@ export default {
         })
       }
       this.moves = 0
+      this.gameStarts = true
     }
   },
   data () {
@@ -180,7 +187,8 @@ export default {
       gridGap: '1px',
       bgStyle: 'none',
       pieceWidth: 0,
-      pieceHeight: 0
+      pieceHeight: 0,
+      gameStarts: false
     }
   },
   mounted: function () {
