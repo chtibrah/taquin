@@ -9,6 +9,7 @@
         gridTemplateColumns: 'repeat(' + grid + ', 1fr)',
         gridTemplateRows: 'repeat(' + grid + ', 1fr)',
         gridGap: gridGap}">
+        <div class="game-starter" v-show="gameStarts !== true"></div>
         <piece :myWidth="pieceWidth" 
           v-for="(piece, index) in shuffledPieces" 
           :myHeight="pieceHeight" 
@@ -234,6 +235,15 @@ export default {
   margin: 0 auto;
   padding: 10px;
   position: relative;
+  .game-starter {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.3);
+    z-index: 1;
+  }
 }
 .win {
   position: absolute;
