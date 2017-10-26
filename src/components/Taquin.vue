@@ -59,7 +59,9 @@ export default {
     },
     chooseRandomMove: function (arr) {
       let j = Math.floor(Math.random() * ((arr.length - 1) + 1))
-      if (this.freePosition === arr[j] || this.randomMoves.indexOf(this.getReversedMove(this.freePosition + '-' + arr[j])) !== -1 || this.randomMoves.indexOf(this.freePosition + '-' + arr[j]) !== -1) {
+      if (this.freePosition === arr[j] ||
+        this.randomMoves.indexOf(this.getReversedMove(this.freePosition + '-' + arr[j])) !== -1 ||
+        this.randomMoves.indexOf(this.freePosition + '-' + arr[j]) !== -1) {
         j = Math.floor(Math.random() * ((arr.length - 1) + 1))
       }
       this.randomMoves.push(this.freePosition + '-' + arr[j])
@@ -117,6 +119,7 @@ export default {
           document.querySelector('.win').style.zIndex = '1'
         }
       }
+
       if (this.grid === 4 && newFreePosition === '33') {
         let currentGamePieces = this.shuffledPieces.slice(0)
         currentGamePieces = currentGamePieces.sort((a, b) => { return a.number > b.number })
@@ -129,9 +132,11 @@ export default {
     changePieceBackground: function (background) {
       this.allPositions = this.grid === 3 ? this.allPositions3x3 : this.allPositions4x4
       this.freePosition = this.grid === 3 ? this.freePosition3x3 : this.freePosition4x4
-      this.shuffledPieces = this.grid === 3 ? this.winningPieces3x3 : this.winningPieces4x4
+      this.shuffledPieces = this.grid === 3 ? this.cloneArray(this.winningPieces3x3) : this.cloneArray(this.winningPieces4x4)
       this.bgStyle = background
       this.gameStarts = false
+      this.randomMoves = []
+      this.firstFreePosition = this.freePosition
     },
     gridChanged: function (newGrid) {
       this.grid = newGrid
@@ -139,18 +144,32 @@ export default {
       this.pieceHeight = parseInt(578 / newGrid)
       this.allPositions = newGrid === 3 ? this.allPositions3x3 : this.allPositions4x4
       this.freePosition = newGrid === 3 ? this.freePosition3x3 : this.freePosition4x4
-      this.shuffledPieces = newGrid === 3 ? this.winningPieces3x3 : this.winningPieces4x4
+      this.shuffledPieces = newGrid === 3 ? this.cloneArray(this.winningPieces3x3) : this.cloneArray(this.winningPieces4x4)
       this.gameStarts = false
+      this.firstFreePosition = this.freePosition
+      this.randomMoves = []
     },
     gameReset: function () {
       this.gameStarts = false
     },
     startGame: function () {
-      if (this.grid === 3) {
-        this.shuffledPieces = this.shuffle(this.shuffledPieces)
-      }
+      this.randomMoves = []
+      // if (this.grid === 3) {
+      let possibleMoves = this.getPossibleMoves(this.freePosition, this.allPositions)
+      let count = 0
+      do {
+        this.chooseRandomMove(possibleMoves)
+        possibleMoves = this.getPossibleMoves(this.freePosition, this.allPositions)
+        count++
+      } while (count < 10 || this.freePosition !== this.firstFreePosition)
+      // sort shuffled over positions
+      this.shuffledPieces = this.shuffle(this.randomMoves).sort(function (a, b) { return (a.position > b.position) ? 1 : ((b.position > a.position) ? -1 : 0) })
       this.moves = 0
       this.gameStarts = true
+      // }
+    },
+    cloneArray: function (inputArr) {
+      return JSON.parse(JSON.stringify(inputArr))
     }
   },
   data () {
@@ -204,7 +223,7 @@ export default {
     this.pieceWidth = parseInt(578 / this.grid)
     this.pieceHeight = parseInt(578 / this.grid)
     this.allPositions = this.grid === 3 ? this.allPositions3x3 : this.allPositions4x4
-    this.shuffledPieces = this.grid === 3 ? this.winningPieces3x3 : this.winningPieces4x4
+    this.shuffledPieces = this.grid === 3 ? this.cloneArray(this.winningPieces3x3) : this.cloneArray(this.winningPieces4x4)
     this.freePosition = this.grid === 3 ? this.freePosition3x3 : this.freePosition4x4
     this.firstFreePosition = this.freePosition
   }
