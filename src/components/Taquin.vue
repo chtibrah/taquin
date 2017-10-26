@@ -275,7 +275,7 @@ export default {
   }
 }
 .win {
-  position: absolute;
+  position: fixed;
   font-size: 70px;
   color: green;
   left: 0;
