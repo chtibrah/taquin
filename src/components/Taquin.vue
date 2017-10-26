@@ -36,19 +36,60 @@ export default {
   name: 'Taquin',
   components: {piece, config},
   methods: {
-    shuffle: function (a) {
-      let j, x, i
-      let b = a.slice(0)
-      for (i = b.length - 1; i > 0; i--) {
-        j = Math.floor(Math.random() * (i + 1))
-        x = b[i]
-        b[i] = b[j]
-        b[j] = x
+    getPositions: function (factor) {
+      let allPos = []
+      for (let i = 0; i < (factor * factor); i++) {
+        let x = Math.floor(i / factor)
+        let y = i % factor
+        allPos.push(x + '' + y)
       }
-      return b
+      return allPos
     },
+    getPossibleMoves: function (position, allPos) {
+      let positionArray = [...position]
+      let possiblePositions = []
+      possiblePositions[0] = (+positionArray[0] - 1) + positionArray[1]
+      possiblePositions[1] = (+positionArray[0] + 1) + positionArray[1]
+      possiblePositions[2] = positionArray[0] + (+positionArray[1] - 1)
+      possiblePositions[3] = positionArray[0] + (+positionArray[1] + 1)
+      return possiblePositions.filter((item) => { return allPos.indexOf(item) !== -1 })
+    },
+    getReversedMove: function (move) {
+      return move.split('-').reverse().join('-')
+    },
+    chooseRandomMove: function (arr) {
+      let j = Math.floor(Math.random() * ((arr.length - 1) + 1))
+      if (this.freePosition === arr[j] || this.randomMoves.indexOf(this.getReversedMove(this.freePosition + '-' + arr[j])) !== -1 || this.randomMoves.indexOf(this.freePosition + '-' + arr[j]) !== -1) {
+        j = Math.floor(Math.random() * ((arr.length - 1) + 1))
+      }
+      this.randomMoves.push(this.freePosition + '-' + arr[j])
+      this.freePosition = arr[j]
+      return arr[j]
+    },
+    shuffle: function (arr) {
+      arr.some((item) => {
+        let piecePosition = item.split('-')[1]
+        for (let prop of this.shuffledPieces) {
+          if (prop.position === piecePosition) {
+            prop.position = item.split('-')[0]
+            break
+          }
+        }
+      })
+      return this.shuffledPieces
+    },
+    // shuffle_old: function (a) {
+    //   let j, x, i
+    //   let b = a.slice(0)
+    //   for (i = b.length - 1; i > 0; i--) {
+    //     j = Math.floor(Math.random() * (i + 1))
+    //     x = b[i]
+    //     b[i] = b[j]
+    //     b[j] = x
+    //   }
+    //   return b
+    // },
     gameIsDone: function (arr1, arr2) {
-      console.log(arr1, arr2)
       let arr3 = arr2.slice(0)
       arr3.sort((a, b) => { return a.number > b.number ? 1 : (a.number < b.number ? -1 : 0) })
       if (arr1.length !== arr3.length) return false
@@ -106,42 +147,7 @@ export default {
     },
     startGame: function () {
       if (this.grid === 3) {
-        this.shuffledPieces = this.shuffle([
-          {number: 1},
-          {number: 2},
-          {number: 3},
-          {number: 4},
-          {number: 5},
-          {number: 6},
-          {number: 7},
-          {number: 8}
-        ]).map((item, i) => {
-          let allPos = ['00', '01', '02', '10', '11', '12', '20', '21']
-          item.position = allPos[i]
-          return item
-        })
-      } else {
-        this.shuffledPieces = this.shuffle([
-          {number: 1},
-          {number: 2},
-          {number: 3},
-          {number: 4},
-          {number: 5},
-          {number: 6},
-          {number: 7},
-          {number: 8},
-          {number: 9},
-          {number: 10},
-          {number: 11},
-          {number: 12},
-          {number: 13},
-          {number: 14},
-          {number: 15}
-        ]).map((item, i) => {
-          let allPos = ['00', '01', '02', '03', '10', '11', '12', '13', '20', '21', '22', '23', '30', '31', '32']
-          item.position = allPos[i]
-          return item
-        })
+        this.shuffledPieces = this.shuffle(this.shuffledPieces)
       }
       this.moves = 0
       this.gameStarts = true
@@ -180,6 +186,7 @@ export default {
       allPositions4x4: ['00', '01', '02', '03', '10', '11', '12', '13', '20', '21', '22', '23', '30', '31', '32', '33'],
       freePosition3x3: '22',
       freePosition4x4: '33',
+      firstFreePosition: '',
       freePosition: '',
       shuffledPieces: [],
       allPositions: [],
@@ -189,7 +196,8 @@ export default {
       bgStyle: 'none',
       pieceWidth: 0,
       pieceHeight: 0,
-      gameStarts: false
+      gameStarts: false,
+      randomMoves: []
     }
   },
   mounted: function () {
@@ -198,6 +206,7 @@ export default {
     this.allPositions = this.grid === 3 ? this.allPositions3x3 : this.allPositions4x4
     this.shuffledPieces = this.grid === 3 ? this.winningPieces3x3 : this.winningPieces4x4
     this.freePosition = this.grid === 3 ? this.freePosition3x3 : this.freePosition4x4
+    this.firstFreePosition = this.freePosition
   }
 }
 </script>
