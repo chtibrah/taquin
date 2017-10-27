@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <config @bgchanged="changePieceBackground" @gridchanged="gridChanged"></config>
+    <gridconfig  @gridchanged="gridChanged"></gridconfig>
     <div class="game-area">
       <div class="win">You Win!!!</div>
       <button class="start-game" @click="startGame">Start Game</button>
@@ -9,7 +9,10 @@
         gridTemplateColumns: 'repeat(' + grid + ', 1fr)',
         gridTemplateRows: 'repeat(' + grid + ', 1fr)',
         gridGap: gridGap}">
-        <div class="game-starter" v-show="gameStarts !== true"></div>
+        <div class="game-starter"
+          v-show="gameStarts !== true"
+          :style="grid === 3 ? {'backgroundColor': 'rgba(103, 58, 183, 0.3)'} : {'backgroundColor': 'rgba(57, 106, 221, 0.3)'}">
+        </div>
         <piece :myWidth="pieceWidth" 
           v-for="(piece, index) in shuffledPieces" 
           :myHeight="pieceHeight" 
@@ -25,16 +28,18 @@
         </piece> 
       </div>
     </div>
+    <pictureconfig @bgchanged="changePieceBackground"></pictureconfig>
   </div>
 </template>
 
 <script>
 import piece from './Piece'
-import config from './Config'
+import gridconfig from './GridConfig'
+import pictureconfig from './PictureConfig'
 
 export default {
   name: 'Taquin',
-  components: {piece, config},
+  components: {piece, gridconfig, pictureconfig},
   methods: {
     getPositions: function (factor) {
       let allPos = []
@@ -154,7 +159,11 @@ export default {
     },
     startGame: function () {
       this.randomMoves = []
-      // if (this.grid === 3) {
+      // this.freePosition = this.grid === 3 ? this.freePosition3x3 : this.freePosition4x4
+      // this.allPositions = this.grid === 3 ? this.allPositions3x3 : this.allPositions4x4
+      // this.freePosition = this.grid === 3 ? this.freePosition3x3 : this.freePosition4x4
+      // this.firstFreePosition = this.freePosition
+      // this.shuffledPieces = this.grid === 3 ? this.cloneArray(this.winningPieces3x3) : this.cloneArray(this.winningPieces4x4)
       let possibleMoves = this.getPossibleMoves(this.freePosition, this.allPositions)
       let count = 0
       do {
@@ -166,7 +175,6 @@ export default {
       this.shuffledPieces = this.shuffle(this.randomMoves).sort(function (a, b) { return (a.position > b.position) ? 1 : ((b.position > a.position) ? -1 : 0) })
       this.moves = 0
       this.gameStarts = true
-      // }
     },
     cloneArray: function (inputArr) {
       return JSON.parse(JSON.stringify(inputArr))
@@ -233,29 +241,36 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 .main {
+  height: 100%;
   position: relative;
-  display: grid; 
-  grid-template-columns: 1fr 2fr;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  .game-area {
+    flex: 1 1 auto;
+  }
 }
 .start-game {
   background: none;
-  border: 1px solid #718cd6;
+  border: 1px solid #bab1ec;
   padding: 10px 10px;
   font-weight: bold;
-  background-color: #88b1e4;
+  background-color: #887ec1;
   color: #fff;
   font-size: 1.25em;
   cursor: pointer;
   outline: 0;
+  margin: 1em 0;
   &:hover {
-    background-color: blue;
+    background-color: #4833bf;
   }
 }
 .moves {
   text-align: center;
+  margin: 1em 0;
+  font-weight: 700;
 }
 .taquin {
+  flex: 1 1 auto;
   width: 600px;
   height: 600px;
   display: grid;
@@ -269,7 +284,6 @@ export default {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0,0,0,0.3);
     z-index: 1;
     cursor: not-allowed;
   }

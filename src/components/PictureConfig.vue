@@ -1,46 +1,28 @@
 <template>
-  <div>
-      <nav class="game-config">
-          <div class="grid-config">
-            <p>
-              <input type="radio" id="gitter-3" value="3" v-model="grid" checked="true" @change="onGridChange">
-              <label for="gitter-3">3x3</label>
-            </p>
-            <p>
-              <input type="radio" id="gitter-4" value="4" v-model="grid" @change="onGridChange">
-              <label bel for="gitter-4">4x4</label>
-            </p>
-          </div>
-          <div class="image-config">
-            <div :key="index" v-for="(pic, index) in pictureConfig">
-              <input  type="radio" :id="pic.index" :value="pic.url" v-model="picture"  @change="onPictureChange" :checked="false">
-              <label v-if="pic.url === 'none'" :for="pic.index" class="numbers">
-                12345...
-              </label>
-              <label v-if="pic.url !== 'none'" :for="pic.index">
-                <img class="config-image" alt="pic1" :src="pic.url">
-              </label>
-            </div>
-          </div>
-      </nav>
+  <div class="image-config">
+    <div :key="index" v-for="(pic, index) in pictureConfig">
+      <input  type="radio" :id="pic.index" :value="pic.url" v-model="picture"  @change="onPictureChange" :checked="false">
+      <label v-if="pic.url === 'none'" :for="pic.index" class="numbers">
+        12345...
+      </label>
+      <label v-if="pic.url !== 'none'" :for="pic.index">
+        <img class="config-image" alt="pic1" :src="pic.url">
+      </label>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'config',
+  name: 'pictureconfig',
   props: ['number', 'position', 'allPositions', 'freePosition'],
   methods: {
     onPictureChange: function () {
       this.$emit('bgchanged', this.picture)
-    },
-    onGridChange: function () {
-      this.$emit('gridchanged', parseInt(this.grid))
     }
   },
   data () {
     return {
-      grid: 3,
       picture: 'none',
       pictureConfig: [
         {index: 'pic0', url: 'none'},
@@ -59,6 +41,7 @@ export default {
 
 <style lang="less" scoped>
 .grid-config {
+  flex: 0 0 auto;
   padding: 5px;
   margin-bottom: 2em;
   border-radius: 4px;
