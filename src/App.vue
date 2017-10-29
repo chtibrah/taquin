@@ -11,10 +11,16 @@ export default {
 </script>
  
 <style>
+*, *:before, *:after {
+  box-sizing: border-box;
+}
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+}
+body {
+  min-width: 320px;
 }
 #app {
   height: 100%;
