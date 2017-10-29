@@ -31,7 +31,6 @@ export default {
 
 <style lang="less" scoped>
 .grid-config {
-  flex: 0 0 auto;
   padding: 5px;
   margin-bottom: 2em;
   .switch-option {
