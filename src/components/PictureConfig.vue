@@ -15,7 +15,6 @@
 <script>
 export default {
   name: 'pictureconfig',
-  props: ['number', 'position', 'allPositions', 'freePosition'],
   methods: {
     onPictureChange: function () {
       this.$emit('bgchanged', this.picture)

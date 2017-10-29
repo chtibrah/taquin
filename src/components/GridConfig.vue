@@ -14,7 +14,6 @@
 <script>
 export default {
   name: 'gridconfig',
-  props: ['number', 'position', 'allPositions', 'freePosition'],
   methods: {
     onGridChange: function () {
       let newGrid = this.checked ? 4 : 3

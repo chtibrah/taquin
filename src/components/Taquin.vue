@@ -1,8 +1,16 @@
 <template>
   <div class="main">
     <gridconfig  @gridchanged="gridChanged"></gridconfig>
+    <pictureconfig @bgchanged="changePieceBackground"></pictureconfig>
     <div class="game-area">
-      <div class="win">You Win!!!</div>
+      <div class="backdrop">
+        <div class="modal">
+          <a class="close" href="#" @click="resetGame">×</a>
+			    <p>You win<br><br>
+            <strong>{{moves}}</strong> moves!!!
+          </p>
+        </div>
+      </div>
       <button class="start-game" @click="startGame">Start Game</button>
       <div class="moves">Moves: {{moves}}</div>
       <div class="taquin" :style="{
@@ -28,7 +36,6 @@
         </piece> 
       </div>
     </div>
-    <pictureconfig @bgchanged="changePieceBackground"></pictureconfig>
   </div>
 </template>
 
@@ -85,17 +92,6 @@ export default {
       })
       return this.shuffledPieces
     },
-    // shuffle_old: function (a) {
-    //   let j, x, i
-    //   let b = a.slice(0)
-    //   for (i = b.length - 1; i > 0; i--) {
-    //     j = Math.floor(Math.random() * (i + 1))
-    //     x = b[i]
-    //     b[i] = b[j]
-    //     b[j] = x
-    //   }
-    //   return b
-    // },
     gameIsDone: function (arr1, arr2) {
       let arr3 = arr2.slice(0)
       arr3.sort((a, b) => { return a.number > b.number ? 1 : (a.number < b.number ? -1 : 0) })
@@ -120,8 +116,8 @@ export default {
         let currentGamePieces = this.shuffledPieces.slice(0)
         currentGamePieces = currentGamePieces.sort((a, b) => { return a.number > b.number })
         if (this.gameIsDone(this.winningPieces3x3, currentGamePieces)) {
-          document.querySelector('.win').style.opacity = '1'
-          document.querySelector('.win').style.zIndex = '1'
+          document.querySelector('.backdrop').style.opacity = '1'
+          document.querySelector('.backdrop').style.zIndex = '1'
         }
       }
 
@@ -129,8 +125,8 @@ export default {
         let currentGamePieces = this.shuffledPieces.slice(0)
         currentGamePieces = currentGamePieces.sort((a, b) => { return a.number > b.number })
         if (this.gameIsDone(this.winningPieces4x4, currentGamePieces)) {
-          document.querySelector('.win').style.opacity = '1'
-          document.querySelector('.win').style.zIndex = '1'
+          document.querySelector('.backdrop').style.opacity = '1'
+          document.querySelector('.backdrop').style.zIndex = '1'
         }
       }
     },
@@ -154,7 +150,9 @@ export default {
       this.firstFreePosition = this.freePosition
       this.randomMoves = []
     },
-    gameReset: function () {
+    resetGame: function () {
+      document.querySelector('.backdrop').style.opacity = '0'
+      document.querySelector('.backdrop').style.zIndex = '-1'
       this.gameStarts = false
     },
     startGame: function () {
@@ -288,7 +286,7 @@ export default {
     cursor: not-allowed;
   }
 }
-.win {
+.backdrop {
   position: fixed;
   font-size: 70px;
   color: green;
@@ -303,5 +301,38 @@ export default {
   background-color: rgba(0, 0, 0, 0.8);
   transition: all 0.25s ease-in-out 0s; 
   z-index: -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .modal {
+    position: relative;
+    width: 400px;
+    height: 180px;
+    background-color: #FFFFFF;
+    max-width: 90%;
+    max-height: 80%;
+    border-radius: 4px;
+    border: 2px solid #000000;
+    padding: 1em; 
+    overflow: hidden;
+    font-size: 16px;
+    .close{
+      position: absolute;
+      display: inline-block;
+      width: 22px;
+      height: 24px;
+      border-radius: 50%;
+      right: 10px;
+      top: 10px;
+      text-align: center;
+      transition: background-color 0.25s ease-out 0s;
+      font-size: 24px;
+      text-decoration: none;
+      line-height: 1;
+      &:hover {
+        background-color: #c3c3c3;
+      }
+    }
+  }
 }
 </style>
