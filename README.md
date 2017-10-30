@@ -1,9 +1,12 @@
-# (8-15)-Puzzel (Jeu de taquin)
+# VueJS - (8-15)-Puzzel (Jeu de taquin)
 
 > A (8-15)-Puzzel game made with VueJS. This game ist known as Jeu de Taquin as well. 
 It was extended to support playing with background images adding to "normal" numbers.
 
 ![alt text](https://marouen-mhiri.com/static/shuffledpic.png "shuffled picture") ![alt text](https://marouen-mhiri.com/static/realpic.png "solved game picture")
+
+## Play it here
+https://www.marouen-mhiri.com/taquin
 
 ## Build Setup
 
