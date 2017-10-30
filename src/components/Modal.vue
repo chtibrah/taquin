@@ -2,10 +2,7 @@
   <div class="backdrop">
     <div class="modal">
       <a class="close" href="#" @click="resetGame">×</a>
-      <p>
-        <strong>You win</strong><br>
-        <strong>{{moves}}</strong> moves!!!
-      </p>
+        <slot></slot>
       <button class="reset-btn" @click="resetGame">Ok</button>
     </div>
   </div>
@@ -14,7 +11,7 @@
 <script>
   export default {
     name: 'modal',
-    props: ['moves'],
+    props: ['message'],
     methods: {
       resetGame: function () {
         document.querySelector('.backdrop').style.opacity = '0'

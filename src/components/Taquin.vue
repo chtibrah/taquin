@@ -5,7 +5,9 @@
       <pictureconfig @bgchanged="changePieceBackground"></pictureconfig>
     </div>
     <div class="game-area">
-      <modal :moves="moves" @reset="resetGame"></modal>
+      <modal @reset="resetGame">
+        <p><strong>You win</strong><br><strong>{{moves}}</strong> moves!!!</p>
+      </modal>
       <button class="start-game" @click="startGame">Start Game</button>
       <div class="moves">Moves: {{moves}}</div>
       <div class="taquin" :style="{
@@ -68,8 +70,9 @@ export default {
     chooseRandomMove: function (arr) {
       let j = Math.floor(Math.random() * ((arr.length - 1) + 1))
       if (this.freePosition === arr[j] ||
-        this.randomMoves.indexOf(this.getReversedMove(this.freePosition + '-' + arr[j])) !== -1 ||
-        this.randomMoves.indexOf(this.freePosition + '-' + arr[j]) !== -1) {
+        (this.randomMoves.length > 0 && this.getReversedMove(this.freePosition + '-' + arr[j]) === this.randomMoves[this.randomMoves.length - 1]) ||
+        this.randomMoves.indexOf(this.freePosition + '-' + arr[j]) !== -1 ||
+        this.gameIsDone(this.winningPieces, this.shuffledPieces)) {
         j = Math.floor(Math.random() * ((arr.length - 1) + 1))
       }
       this.randomMoves.push(this.freePosition + '-' + arr[j])
@@ -141,7 +144,7 @@ export default {
         this.chooseRandomMove(possibleMoves)
         possibleMoves = this.getPossibleMoves(this.freePosition, this.allPositions)
         count++
-      } while (count < 10 || this.freePosition !== this.firstFreePosition)
+      } while (count < 20 || this.freePosition !== this.firstFreePosition)
       // sort shuffled array over positions
       this.shuffledPieces = this.shuffle(this.randomMoves).sort(function (a, b) { return (a.position > b.position) ? 1 : ((b.position > a.position) ? -1 : 0) })
       this.moves = 0
